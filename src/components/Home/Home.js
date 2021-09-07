@@ -13,7 +13,7 @@ import Footer from "../Layout/Footer";
 import HomeBanner from "./HomeSubCompo/HomeBanner";
 import ProductDetail from "../Products/ProductDetail";
 import FeaturedProducts from "./HomeSubCompo/FeaturedProducts";
-import { appId, apiUrl, deliveryId, pickupId } from "../Helpers/Config";
+import { appId, apiUrl, deliveryId, pickupId, cookieDefaultConfig } from "../Helpers/Config";
 import {
   GET_GLOBAL_SETTINGS,
   GET_STATIC_BLOCK,
@@ -235,12 +235,12 @@ class Home extends Component {
       cookie.load("triggerAvlPop") != undefined
     ) {
       var availabilityId = cookie.load("triggerAvlPop");
-      cookie.remove("triggerAvlPop", { path: "/" });
+      cookie.remove("triggerAvlPop", cookieDefaultConfig);
       this.chooseAvailability(availabilityId);
     }
 
     if (cookie.load("orderPopuptrigger") === "Yes") {
-      cookie.remove("orderPopuptrigger", { path: "/" });
+      cookie.remove("orderPopuptrigger", cookieDefaultConfig);
       $.magnificPopup.open({
         items: {
           src: "#order-popup",
@@ -250,7 +250,7 @@ class Home extends Component {
     }
 
     if (cookie.load("loginpopupTrigger") === "Yes") {
-      cookie.save("loginpopupTrigger", "fromcheckout", { path: "/" });
+      cookie.save("loginpopupTrigger", "fromcheckout", cookieDefaultConfig);
       $.magnificPopup.open({
         items: {
           src: "#login-popup",
@@ -320,7 +320,7 @@ class Home extends Component {
         if (settingsArr[0].result_set.client_promocode_enable === "1") {
           showNormalPopup =
             settingsArr[0].result_set.client_promo_code_normal_popup_enable ===
-            "1"
+              "1"
               ? "yes"
               : "";
           if (settingsArr[0].result_set.client_promocode_options === "1") {
@@ -355,12 +355,12 @@ class Home extends Component {
           var normalpopupIdsNew =
             normalpopupIds != "" && normalpopupIds != undefined
               ? normalpopupIds +
-                "~~" +
-                this.state.normalpopupdata.normalpopup_id
+              "~~" +
+              this.state.normalpopupdata.normalpopup_id
               : this.state.normalpopupdata.normalpopup_id;
           var normalpopupIdArr = [];
           normalpopupIdArr["normalpopupids"] = normalpopupIdsNew;
-          cookie.save("normalpopupIds", normalpopupIdsNew, { path: "/" });
+          cookie.save("normalpopupIds", normalpopupIdsNew, cookieDefaultConfig);
           var $_this_rec = this;
           $.magnificPopup.open({
             items: {
@@ -386,8 +386,8 @@ class Home extends Component {
             Object.keys(this.state.normalpopupdata).length === 0)) &&
         cookie.load("mailpopopuptrg") !== "yes"
       ) {
-        cookie.save("mailpopopuptrg", "yes", { path: "/" });
-        cookie.remove("promoPopupTrigger", { path: "/" });
+        cookie.save("mailpopopuptrg", "yes", cookieDefaultConfig);
+        cookie.remove("promoPopupTrigger", cookieDefaultConfig);
         $.magnificPopup.open({
           items: {
             src: "#promo-check-popup",
@@ -526,7 +526,7 @@ class Home extends Component {
         if (settingsArr[0].result_set.client_promocode_enable === "1") {
           showNormalPopup =
             settingsArr[0].result_set.client_promo_code_normal_popup_enable ===
-            "1"
+              "1"
               ? "yes"
               : "";
           if (settingsArr[0].result_set.client_promocode_options === "1") {

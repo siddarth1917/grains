@@ -11,7 +11,7 @@ import {
 } from "../Helpers/SettingHelper";
 import { hashHistory } from "react-router";
 import { createBrowserHistory as history } from "history";
-import { baseUrl, appId, apiUrl } from "../Helpers/Config";
+import { baseUrl, appId, apiUrl, cookieDefaultConfig } from "../Helpers/Config";
 import cookie from "react-cookies";
 import Slider from "react-slick";
 var dateFormat = require("dateformat");
@@ -259,14 +259,14 @@ class Mypromotions extends Component {
           }
 
           hideLoader("promo-codediv-" + index, "idtext");
-          cookie.save("reedemPointVal", reedemPointVal, { path: "/" });
-          cookie.save("promoCodeVal", promoCodeVal, { path: "/" });
-          cookie.save("promotionApplied", promotionApplied, { path: "/" });
-          cookie.save("promotionType", promotionType, { path: "/" });
-          cookie.save("promotionAmount", promotionAmount, { path: "/" });
-          cookie.save("promotionSource", promotionSource, { path: "/" });
-          cookie.save("promoIsDelivery", promoIsDelivery, { path: "/" });
-          cookie.save("usedPoints", usedPoints, { path: "/" });
+          cookie.save("reedemPointVal", reedemPointVal, cookieDefaultConfig);
+          cookie.save("promoCodeVal", promoCodeVal, cookieDefaultConfig);
+          cookie.save("promotionApplied", promotionApplied, cookieDefaultConfig);
+          cookie.save("promotionType", promotionType, cookieDefaultConfig);
+          cookie.save("promotionAmount", promotionAmount, cookieDefaultConfig);
+          cookie.save("promotionSource", promotionSource, cookieDefaultConfig);
+          cookie.save("promoIsDelivery", promoIsDelivery, cookieDefaultConfig);
+          cookie.save("usedPoints", usedPoints, cookieDefaultConfig);
 
           if (promotionApplied === "Yes") {
             const { history } = this.props;
@@ -301,7 +301,7 @@ class Mypromotions extends Component {
   promotioncheckout() {
     $.magnificPopup.close();
     const { history } = this.props;
-    cookie.save("fromCkeckOutVld", "Yes", { path: "/" });
+    cookie.save("fromCkeckOutVld", "Yes", cookieDefaultConfig);
     history.push("/checkout");
   }
   /*promotion list */
@@ -337,7 +337,7 @@ class Mypromotions extends Component {
           <div className="promo-earned-col-item">
             <div className="promo-earned-col-image">
               {promo.promotion_image !== "" &&
-              promo.promotion_image !== null ? (
+                promo.promotion_image !== null ? (
                 <img src={this.props.promoSource + promo.promotion_image} />
               ) : (
                 <img src={promotionImage} />
@@ -387,7 +387,7 @@ class Mypromotions extends Component {
             <div className="promo-earned-col-image">
               <div className="innerproduct-item-image">
                 {promo.promotion_image !== "" &&
-                promo.promotion_image !== null ? (
+                  promo.promotion_image !== null ? (
                   <img src={this.props.promoSource + promo.promotion_image} />
                 ) : (
                   <img src={promotionImage} />
@@ -573,7 +573,7 @@ class Mypromotions extends Component {
                                 <div className="tab_mobrow filter_tabin">
                                   <div className="order-delivery">
                                     <div className="ord-body">
-                                      {}
+                                      { }
 
                                       <div className="cur-order-body mypromo-main-div">
                                         <ul className="myacc_order_details">
@@ -635,8 +635,8 @@ class Mypromotions extends Component {
               <p>
                 {this.state.promodetails.promo_desc !== ""
                   ? Parser(
-                      stripslashes(this.state.promodetails.promo_desc + "")
-                    )
+                    stripslashes(this.state.promodetails.promo_desc + "")
+                  )
                   : ""}
               </p>
               <a

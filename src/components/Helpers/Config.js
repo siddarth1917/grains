@@ -32,3 +32,14 @@ export const stripeEmail = "dev@jankosoft.com";
 export const stripeReference = "grainsandco";
 export const stripeDesc = "My Checkout";
 export const stripeCurrency = "SGD";
+
+/* its default cookie configuration */
+
+export const cookieDefaultConfig = {
+  path: '/',
+  /* expires,
+   maxAge: 1000,
+   domain: 'grainsnew.promobuddy.asia', */
+  secure: true,
+  httpOnly: false
+};

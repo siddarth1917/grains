@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Axios from "axios";
 import cookie from "react-cookies";
-import { appId, apiUrlV2, deliveryId } from "../../Helpers/Config";
+import { appId, apiUrlV2, deliveryId, cookieDefaultConfig } from "../../Helpers/Config";
 import {
   getReferenceID,
   stripslashes,
@@ -131,7 +131,7 @@ class FeaturedProducts extends Component {
         });
       }
     } else {
-      cookie.save("popuptriggerFrom", "FeaturedPro", { path: "/" });
+      cookie.save("popuptriggerFrom", "FeaturedPro", cookieDefaultConfig);
       $.magnificPopup.open({
         items: {
           src: ".order_popup",
@@ -168,7 +168,7 @@ class FeaturedProducts extends Component {
         this.props.sateValChange("view_pro_data", productSlug);
       }
     } else {
-      cookie.save("popuptriggerFrom", "FeaturedPro", { path: "/" });
+      cookie.save("popuptriggerFrom", "FeaturedPro", cookieDefaultConfig);
       $.magnificPopup.open({
         items: {
           src: ".order_popup",
@@ -237,7 +237,7 @@ class FeaturedProducts extends Component {
                                       return (
                                         <li key={index1}>
                                           {producttag.pro_tag_name !== "" ? (
-                                           producttag.pro_tag_name  
+                                            producttag.pro_tag_name
                                           ) : (
                                             ""
                                           )}
@@ -256,10 +256,10 @@ class FeaturedProducts extends Component {
                             <p>
                               {featurepro.product_short_description != ""
                                 ? Parser(
-                                    stripslashes(
-                                      featurepro.product_short_description
-                                    )
+                                  stripslashes(
+                                    featurepro.product_short_description
                                   )
+                                )
                                 : Parser("&nbsp;")}
                             </p>
                           </div>
@@ -311,7 +311,7 @@ class FeaturedProducts extends Component {
                             </div>
 
                             {featurepro.product_stock > 0 ||
-                            featurepro.product_stock === null ? (
+                              featurepro.product_stock === null ? (
                               featurepro.product_type === "1" ? (
                                 <a
                                   className="button order_nowdiv smiple_product_lk disbl_href_action"

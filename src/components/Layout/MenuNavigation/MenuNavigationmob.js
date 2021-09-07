@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { Component } from "react";
-import { appId, apiUrl, deliveryId, apiUrlV2 } from "../../Helpers/Config";
+import { appId, apiUrl, deliveryId, apiUrlV2, cookieDefaultConfig } from "../../Helpers/Config";
 import { stripslashes } from "../../Helpers/SettingHelper";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -20,26 +20,24 @@ export default class MenuNavigationmob extends Component {
     var availabilityId = cookie.load("defaultAvilablityId");
     var orderOutletId =
       cookie.load("orderOutletId") === undefined ||
-      cookie.load("orderOutletId") === "null" ||
-      cookie.load("orderOutletId") == ""
+        cookie.load("orderOutletId") === "null" ||
+        cookie.load("orderOutletId") == ""
         ? ""
         : cookie.load("orderOutletId");
     axios
       .get(
         apiUrlV2 +
-          "products/getMenuNavigation?app_id=" +
-          appId +
-          "&availability=" +
-          availabilityId +
-          "&outletId=" +
-          orderOutletId
+        "products/getMenuNavigation?app_id=" +
+        appId +
+        "&availability=" +
+        availabilityId +
+        "&outletId=" +
+        orderOutletId
       )
       .then((res) => {
         if (res.data.status == "ok") {
           this.setState({ menuList: res.data.result_set });
-          cookie.save("firstNavigation", res.data.result_set[0].pro_cate_slug, {
-            path: "/",
-          });
+          cookie.save("firstNavigation", res.data.result_set[0].pro_cate_slug, cookieDefaultConfig);
         }
       });
   }
@@ -57,7 +55,7 @@ export default class MenuNavigationmob extends Component {
     ));
 
     /*return submenu.map((loaddata, index) => <li key={index} > <Link to={"/products/category/" + categorySlug + "/" + loaddata.pro_subcate_slug} title={stripslashes(loaddata
-			.pro_subcate_name)} >{stripslashes(loaddata.pro_subcate_name)} </Link></li >);*/
+      .pro_subcate_name)} >{stripslashes(loaddata.pro_subcate_name)} </Link></li >);*/
   }
 
   /* submenu listing */

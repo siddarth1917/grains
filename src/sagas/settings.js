@@ -6,9 +6,11 @@ import {
   apiUrl,
   deliveryId,
   pickupId,
+  cookieDefaultConfig
 } from "../components/Helpers/Config";
 import cookie from "react-cookies";
 import Axios from "axios";
+
 
 export const watchGetSettings = function* () {
   yield takeEvery(GET_GLOBAL_SETTINGS, workerGetSettings);
@@ -18,12 +20,12 @@ function* workerGetSettings() {
   try {
     var availabilityId =
       cookie.load("defaultAvilablityId") === undefined ||
-      cookie.load("defaultAvilablityId") === ""
+        cookie.load("defaultAvilablityId") === ""
         ? ""
         : cookie.load("defaultAvilablityId");
     var orderPostalCode =
       cookie.load("orderPostalCode") === undefined ||
-      cookie.load("orderPostalCode") === ""
+        cookie.load("orderPostalCode") === ""
         ? ""
         : cookie.load("orderPostalCode");
     var posCdParm =
@@ -38,12 +40,8 @@ function* workerGetSettings() {
       avltyParm +
       posCdParm;
     const result = yield call(Axios.get, uri);
-    cookie.save("deliveryOption", "No", {
-      path: "/",
-    });
-    cookie.save("pickupOption", "No", {
-      path: "/",
-    });
+    cookie.save("deliveryOption", "No", cookieDefaultConfig);
+    cookie.save("pickupOption", "No", cookieDefaultConfig);
 
     if (result.data.status === "ok") {
       var resultSet = result.data.result_set;
@@ -59,14 +57,10 @@ function* workerGetSettings() {
         var availabilityLen = availability.length;
         for (var i = 0; i < availabilityLen; i++) {
           if (availability[i].availability_id === deliveryId) {
-            cookie.save("deliveryOption", "Yes", {
-              path: "/",
-            });
+            cookie.save("deliveryOption", "Yes", cookieDefaultConfig);
           }
           if (availability[i].availability_id === pickupId) {
-            cookie.save("pickupOption", "Yes", {
-              path: "/",
-            });
+            cookie.save("pickupOption", "Yes", cookieDefaultConfig);
           }
         }
       }

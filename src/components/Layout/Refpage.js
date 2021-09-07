@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import cookie from "react-cookies";
-import { deliveryId, pickupId } from "../Helpers/Config";
+import { deliveryId, pickupId, cookieDefaultConfig } from "../Helpers/Config";
 
 class Refpage extends Component {
   constructor(props) {
@@ -12,25 +12,17 @@ class Refpage extends Component {
         : "";
 
     if (slugtext === "delivery") {
-      cookie.save("triggerAvlPop", deliveryId, {
-        path: "/",
-      });
+      cookie.save("triggerAvlPop", deliveryId, cookieDefaultConfig);
     } else if (slugtext === "pickup") {
-      cookie.save("triggerAvlPop", pickupId, {
-        path: "/",
-      });
+      cookie.save("triggerAvlPop", pickupId, cookieDefaultConfig);
     } else if (slugtext === "ordernow") {
-      cookie.save("orderPopuptrigger", "Yes", {
-        path: "/",
-      });
+      cookie.save("orderPopuptrigger", "Yes", cookieDefaultConfig);
     } else if (slugtext === "promopopup") {
-      cookie.save("promoPopupTrigger", "Yes", {
-        path: "/",
-      });
+      cookie.save("promoPopupTrigger", "Yes", cookieDefaultConfig);
     } else {
-      cookie.remove("triggerAvlPop", { path: "/" });
-      cookie.remove("orderPopuptrigger", { path: "/" });
-      cookie.remove("promoPopupTrigger", { path: "/" });
+      cookie.remove("triggerAvlPop", cookieDefaultConfig);
+      cookie.remove("orderPopuptrigger", cookieDefaultConfig);
+      cookie.remove("promoPopupTrigger", cookieDefaultConfig);
     }
 
     this.props.history.push("/");

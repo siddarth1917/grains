@@ -15,7 +15,7 @@ import {
   resetCrtStyle,
   showAlert,
 } from "../Helpers/SettingHelper";
-import { deliveryId, CountryTxt } from "../Helpers/Config";
+import { deliveryId, CountryTxt, cookieDefaultConfig } from "../Helpers/Config";
 
 import crossImg from "../../common/images/cross1.png";
 import shoppingBag from "../../common/images/shopping-bag.svg";
@@ -107,8 +107,8 @@ class CartSideBar extends Component {
     });
   }
 
-  componentDidMount() {}
-  handleChange = (event) => {};
+  componentDidMount() { }
+  handleChange = (event) => { };
   removePromoFun(event) {
     event.preventDefault();
     removePromoCkValue();
@@ -123,10 +123,10 @@ class CartSideBar extends Component {
 
   handleAddrChange(event) {
     if (event.target.name === "unit_no1") {
-      cookie.save("unitNoOne", event.target.value, { path: "/" });
+      cookie.save("unitNoOne", event.target.value, cookieDefaultConfig);
       this.setState({ unitnumber1: event.target.value });
     } else if (event.target.name === "unit_no2") {
-      cookie.save("unitNoTwo", event.target.value, { path: "/" });
+      cookie.save("unitNoTwo", event.target.value, cookieDefaultConfig);
       this.setState({ unitnumber2: event.target.value });
     }
   }
@@ -554,18 +554,18 @@ class CartSideBar extends Component {
   cartItemList() {
     var cartItemsArr = this.props.cartItems;
     if (Object.keys(cartItemsArr).length > 0) {
-     
-      if(this.props.opencart!=="" && typeof this.props.opencart!==undefined && typeof this.props.opencart!=="undefined") {
-        if(this.props.opencart==="Y") {
+
+      if (this.props.opencart !== "" && typeof this.props.opencart !== undefined && typeof this.props.opencart !== "undefined") {
+        if (this.props.opencart === "Y") {
           var current_This = this;
           setTimeout(function () {
             current_This.props.prpSateValChange("opencart", "N");
-            $("body").addClass("cart-items-open"); 
-            $(".hcart_dropdown").addClass("open"); 
+            $("body").addClass("cart-items-open");
+            $(".hcart_dropdown").addClass("open");
           }, 1000);
-        }              
+        }
       }
-    
+
 
       return cartItemsArr.map((product, index) => (
         <div
@@ -583,23 +583,23 @@ class CartSideBar extends Component {
             </div>
             <div className="cart_info text-left">
               <h4>{stripslashes(product.cart_item_product_name)}
-              {product.set_menu_component.length > 0 && (
-            <a
-              href="/"
-              className="edit-cart-item"
-              onClick={this.openEdit.bind(
-                this,
-                index,
-                product.cart_item_product_id
-              )}
-            >
-              <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-            </a>
-          )}
+                {product.set_menu_component.length > 0 && (
+                  <a
+                    href="/"
+                    className="edit-cart-item"
+                    onClick={this.openEdit.bind(
+                      this,
+                      index,
+                      product.cart_item_product_id
+                    )}
+                  >
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                  </a>
+                )}
               </h4>
               <h4>
                 {product.cart_item_voucher_id !== "" &&
-                product.cart_item_voucher_id != null
+                  product.cart_item_voucher_id != null
                   ? "Discount Applied"
                   : ""}
               </h4>
