@@ -40,6 +40,7 @@ class Logout extends Component {
 
     cookie.remove("orderIdTxt", cookieDefaultConfig);
     cookie.remove("paymentIdTxt", cookieDefaultConfig);
+	sessionStorage.removeItem("mytime");
     this.props.history.push("/");
   }
 

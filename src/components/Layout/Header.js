@@ -7,6 +7,8 @@ import axios from "axios";
 import update from "immutability-helper";
 import { setMinutes, setHours, getDay, format } from "date-fns";
 var dateFormat = require("dateformat");
+import moment from "moment";
+const timeInterval = 25;
 
 import {
   appId,
@@ -71,6 +73,8 @@ import takeawayImg from "../../common/images/grocery.png";
 class Header extends Component {
   constructor(props) {
     super(props);
+	
+	 this.idleTimer = null;
     this.state = {
       seletedAvilablityId: "",
       defaultAvilablityId:
@@ -181,6 +185,8 @@ class Header extends Component {
   fieldChange = (field, value) => {
     this.setState(update(this.state, { fields: { [field]: { $set: value } } }));
   };
+  
+ 
 
   handleSignin = () => {
     const formPayload = this.state.fields;
@@ -592,6 +598,7 @@ class Header extends Component {
         cust_birthdate = fbloginData.result_set.customer_birthdate;
       }
       cookie.save("UserId", fbloginData.result_set.customer_id, cookieDefaultConfig);
+	   sessionStorage.setItem("mytime", new Date(Date.now() +  timeInterval *60000));
       cookie.save("UserEmail", fbloginData.result_set.customer_email, cookieDefaultConfig);
       cookie.save(
         "UserFname",
@@ -786,6 +793,15 @@ class Header extends Component {
       type: "inline",
     });
   }
+   changeSessionTimer() {
+	      sessionStorage.setItem("mytime", new Date(Date.now() + timeInterval *60000));
+   }
+   
+    logoutSessionTimer() {
+	        //history.push("/logout");
+			 this.props.history.push("/logout");
+   }
+ 
 
   changeAvailability() {
     var tempArr = [],
@@ -1452,6 +1468,11 @@ class Header extends Component {
   }
 
   componentDidMount() {
+	  if(  typeof cookie.load("ses_time") !== "undefined"   && typeof cookie.load("UserId") !== "undefined"   ) {
+		  this.onIdle();
+	  }
+	  
+	  
     if (
       cookie.load("openLogin") !== undefined &&
       typeof cookie.load("openLogin") !== undefined &&
@@ -1633,7 +1654,31 @@ class Header extends Component {
     this.getSearchProductList();
   }
 
-  componentDidUpdate() { }
+ onIdle = () => {
+    this.logoutTimer = setTimeout(() => {
+	
+      if(typeof sessionStorage.getItem("mytime") !== "undefined" && sessionStorage.getItem("mytime") !== null  && typeof cookie.load("UserId") !== "undefined" && cookie.load("UserId") !== null ) {
+		 if (moment(sessionStorage.getItem("mytime")) <  moment(new Date(Date.now()))   ) {
+			 
+		  	$.magnificPopup.open({
+          items: {
+            src: "#session-expired-popup",
+          },
+          type: "inline",
+		          closeOnBgClick: false,
+				  enableEscapeKey: false,
+				    showCloseBtn:false
+        });
+		 
+		 }
+		 
+		    this.onIdle();
+	  }
+	    
+    }, 1000 * 5 * 1); // 5 seconds
+  }
+  
+ 
 
   getSearchProductList() {
     var orderOutletIdtext = cookie.load("orderOutletId");
@@ -3052,6 +3097,45 @@ class Header extends Component {
                         className="button button-right popup-modal-dismiss disbl_href_action"
                       >
                         Yes
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Warning Popup - end */}
+		  
+		  
+		   {/* Warning Popup - start */}
+          <div
+            id="session-expired-popup"
+            className="white-popup mfp-hide popup_sec warning_popup"
+          >
+            <div className="custom_alert">
+              <div className="custom_alertin">
+                <div className="alert_height">
+                  <div className="alert_header">Warning</div>
+                  <div className="alert_body">
+                    <img className="warning-popup-img" src={warningImg} />
+                    <p> Your session will expire in 5 mins</p>
+                    <p>Do you want to extend the session?</p>
+                    <div className="alt_btns">
+                      <a
+                        href="/"
+						 onClick={this.changeSessionTimer.bind(this)}
+                        className="popup-modal-dismiss button button-left disbl_href_action"
+                      >
+                        Yes
+                      </a>
+					  
+					  
+                      <a
+                        href="/"
+                        onClick={this.logoutSessionTimer.bind(this)}
+                        className="button button-right popup-modal-dismiss disbl_href_action"
+                      >
+                        Logout
                       </a>
                     </div>
                   </div>
