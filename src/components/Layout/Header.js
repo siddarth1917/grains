@@ -1656,7 +1656,7 @@ class Header extends Component {
 
  onIdle = () => {
     this.logoutTimer = setTimeout(() => {
-     console.log('session-expired-popup');
+ 
       if(typeof sessionStorage.getItem("mytime") !== "undefined" && sessionStorage.getItem("mytime") !== null  && typeof cookie.load("UserId") !== "undefined" && cookie.load("UserId") !== null ) {
 		 if (moment(sessionStorage.getItem("mytime")) <  moment(new Date(Date.now()))   ) {
 			 
