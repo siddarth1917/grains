@@ -2,7 +2,7 @@
 import React from "react";
 import cookie from "react-cookies";
 import noimage from "../../common/images/noimg-800x800.jpg";
-import { deliveryId } from "./Config";
+import { deliveryId, cookieDefaultConfig } from "./Config";
 import $ from "jquery";
 
 /* stripslashes  */
@@ -76,7 +76,7 @@ export const showSubTotalValue = function (price) {
 export const getReferenceID = function () {
   if (typeof cookie.load("referenceId") === "undefined") {
     var randomKey = randomId();
-    cookie.save("referenceId", randomKey, { path: "/" });
+    cookie.save("referenceId", randomKey, cookieDefaultConfig);
     return randomKey;
   } else {
     return cookie.load("referenceId");
@@ -85,21 +85,21 @@ export const getReferenceID = function () {
 
 /*remove promotion value*/
 export const removePromoCkValue = function () {
-  cookie.remove("reedemPointVal", { path: "/" });
-  cookie.remove("promoCodeVal", { path: "/" });
-  cookie.remove("promotionApplied", { path: "/" });
-  cookie.remove("promotionType", { path: "/" });
-  cookie.remove("promotionAmount", { path: "/" });
-  cookie.remove("promotionSource", { path: "/" });
-  cookie.remove("promoIsDelivery", { path: "/" });
-  cookie.remove("usedPoints", { path: "/" });
+  cookie.remove("reedemPointVal", cookieDefaultConfig);
+  cookie.remove("promoCodeVal", cookieDefaultConfig);
+  cookie.remove("promotionApplied", cookieDefaultConfig);
+  cookie.remove("promotionType", cookieDefaultConfig);
+  cookie.remove("promotionAmount", cookieDefaultConfig);
+  cookie.remove("promotionSource", cookieDefaultConfig);
+  cookie.remove("promoIsDelivery", cookieDefaultConfig);
+  cookie.remove("usedPoints", cookieDefaultConfig);
 };
 
 /*remove order date time*/
 export const removeOrderDateTime = function () {
-  cookie.remove("orderDateTime", { path: "/" });
-  cookie.remove("deliveryDate", { path: "/" });
-  cookie.remove("deliveryTime", { path: "/" });
+  cookie.remove("orderDateTime", cookieDefaultConfig);
+  cookie.remove("deliveryDate", cookieDefaultConfig);
+  cookie.remove("deliveryTime", cookieDefaultConfig);
 };
 
 /*remove promotion value*/
@@ -162,8 +162,8 @@ export const addressFormat = function (
     unitTwo !== "" && unitOne !== ""
       ? "#" + unitOne + "-" + unitTwo + ", "
       : unitOne !== ""
-      ? "#" + unitOne + ", "
-      : "";
+        ? "#" + unitOne + ", "
+        : "";
   unit = addressOne !== "" ? unit + addressOne + "," : unit;
   unit = addressTwo !== "" ? unit + addressTwo + "," : unit;
   unit = postCode !== "" ? unit + "Singapore " + postCode : unit;
@@ -210,8 +210,8 @@ export const getCalculatedAmount = function (
     ) {
       deliveryAmount =
         cartDetailsArr.cart_zone_delivery_charge !== "" &&
-        typeof cartDetailsArr.cart_zone_delivery_charge !== undefined &&
-        typeof cartDetailsArr.cart_zone_delivery_charge !== "undefined"
+          typeof cartDetailsArr.cart_zone_delivery_charge !== undefined &&
+          typeof cartDetailsArr.cart_zone_delivery_charge !== "undefined"
           ? parseFloat(cartDetailsArr.cart_zone_delivery_charge)
           : 0;
     } else {
@@ -365,18 +365,18 @@ export const showAlert = function (header, message, autoClose = "No") {
   if (autoClose === "No") {
     $("body").append(
       '<div class="white-popup mfp-hide popup_sec alert_popup custom-alrt-popupcls" ><div class="custom_alert"><div class="custom_alertin"><div class="alert_height"><div class="alert_header">' +
-        header +
-        '</div><div class="alert_body"><p>' +
-        message +
-        '</p><div class="alt_btns"><a href="javascript:;" class="popup-modal-dismiss button">OK</a></div></div></div></div></div></div>'
+      header +
+      '</div><div class="alert_body"><p>' +
+      message +
+      '</p><div class="alt_btns"><a href="javascript:;" class="popup-modal-dismiss button">OK</a></div></div></div></div></div></div>'
     );
   } else {
     $("body").append(
       '<div class="white-popup mfp-hide popup_sec alert_popup custom-alrt-popupcls" ><div class="custom_alert"><div class="custom_alertin"><div class="alert_height"><div class="alert_header">' +
-        header +
-        '</div><div class="alert_body"><p>' +
-        message +
-        '</p><div class="alt_btns"></div></div></div></div></div></div>'
+      header +
+      '</div><div class="alert_body"><p>' +
+      message +
+      '</p><div class="alt_btns"></div></div></div></div></div></div>'
     );
     setTimeout(function () {
       autoClose.close();
@@ -431,7 +431,7 @@ export const showCartItemCount = function (cartDetail) {
     Object.keys(cartDetail).length > 0 ? cartDetail.cart_total_items : 0;
   var subTotal =
     Object.keys(cartDetail).length > 0 ? cartDetail.cart_sub_total : 0;
-  cookie.save("cartTotalItems", itemCount, { path: "/" });
+  cookie.save("cartTotalItems", itemCount, cookieDefaultConfig);
   $(".hcart_round").html(itemCount);
   if (parseFloat(subTotal) > 0) {
     $(".crttotl_amt").show();
@@ -856,4 +856,10 @@ export const validateIntval = function (e) {
   if (!re.test(e.key)) {
     e.preventDefault();
   }
+};
+
+
+/* get cookies default configuartion */
+export const getCookieDefaultConfig = function () {
+  return 1;
 };

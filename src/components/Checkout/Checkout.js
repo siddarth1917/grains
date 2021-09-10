@@ -32,6 +32,7 @@ import {
   stripeCurrency,
   stripeImage,
   stripeCompany,
+  cookieDefaultConfig
 } from "../Helpers/Config";
 import {
   getReferenceID,
@@ -87,12 +88,12 @@ class Checkout extends Component {
 
     var avilablityId =
       cookie.load("defaultAvilablityId") != "" &&
-      cookie.load("defaultAvilablityId") != undefined
+        cookie.load("defaultAvilablityId") != undefined
         ? cookie.load("defaultAvilablityId")
         : "";
     var orderOutletId =
       cookie.load("orderOutletId") != "" &&
-      cookie.load("orderOutletId") != undefined
+        cookie.load("orderOutletId") != undefined
         ? cookie.load("orderOutletId")
         : "";
     var orderPostalCode =
@@ -313,7 +314,7 @@ class Checkout extends Component {
 
   handleAddrChange(event) {
     if (event.target.name === "unit_no1") {
-      cookie.save("unitNoOne", event.target.value, { path: "/" });
+      cookie.save("unitNoOne", event.target.value, cookieDefaultConfig);
       this.setState(
         { unitnumber1: event.target.value },
         function () {
@@ -321,7 +322,7 @@ class Checkout extends Component {
         }.bind(this)
       );
     } else if (event.target.name === "unit_no2") {
-      cookie.save("unitNoTwo", event.target.value, { path: "/" });
+      cookie.save("unitNoTwo", event.target.value, cookieDefaultConfig);
       this.setState(
         { unitnumber2: event.target.value },
         function () {
@@ -628,9 +629,9 @@ class Checkout extends Component {
     var deliveryTime =
       this.pad(OrdHours) + ":" + this.pad(OrdMunts) + ":" + this.pad(OrdSecnd);
 
-    cookie.save("orderDateTime", ordDateTime, { path: "/" });
-    cookie.save("deliveryDate", deliveryDate, { path: "/" });
-    cookie.save("deliveryTime", deliveryTime, { path: "/" });
+    cookie.save("orderDateTime", ordDateTime, cookieDefaultConfig);
+    cookie.save("deliveryDate", deliveryDate, cookieDefaultConfig);
+    cookie.save("deliveryTime", deliveryTime, cookieDefaultConfig);
 
     var isAdvanced = this.state.isAdvanced;
     var slotType = this.state.slotType;
@@ -645,10 +646,10 @@ class Checkout extends Component {
       orderSlotEndTime = this.state.seleted_ord_slot_end;
     }
 
-    cookie.save("orderSlotVal", orderSlotVal, { path: "/" });
-    cookie.save("orderSlotTxt", orderSlotTxt, { path: "/" });
-    cookie.save("orderSlotStrTime", orderSlotStrTime, { path: "/" });
-    cookie.save("orderSlotEndTime", orderSlotEndTime, { path: "/" });
+    cookie.save("orderSlotVal", orderSlotVal, cookieDefaultConfig);
+    cookie.save("orderSlotTxt", orderSlotTxt, cookieDefaultConfig);
+    cookie.save("orderSlotStrTime", orderSlotStrTime, cookieDefaultConfig);
+    cookie.save("orderSlotEndTime", orderSlotEndTime, cookieDefaultConfig);
   }
 
   getServiceChargeAmt(OrdDateTimeArr) {
@@ -774,12 +775,12 @@ class Checkout extends Component {
   checkOutAuthentication() {
     var orderOutletId =
       cookie.load("orderOutletId") != "" &&
-      cookie.load("orderOutletId") != undefined
+        cookie.load("orderOutletId") != undefined
         ? cookie.load("orderOutletId")
         : "";
     var avilablityId =
       cookie.load("defaultAvilablityId") != "" &&
-      cookie.load("defaultAvilablityId") != undefined
+        cookie.load("defaultAvilablityId") != undefined
         ? cookie.load("defaultAvilablityId")
         : "";
     var zoneIdTxt =
@@ -869,7 +870,7 @@ class Checkout extends Component {
         ? cookie.load("UserId")
         : "";
     if (UserId === "") {
-      cookie.save("loginpopupTrigger", "Yes", { path: "/" });
+      cookie.save("loginpopupTrigger", "Yes", cookieDefaultConfig);
       this.props.history.push("/");
       return false;
     }
@@ -1153,7 +1154,7 @@ class Checkout extends Component {
 
               <h4>
                 {product.cart_item_voucher_id !== "" &&
-                product.cart_item_voucher_id != null
+                  product.cart_item_voucher_id != null
                   ? "Discount Applied"
                   : ""}
               </h4>
@@ -1445,14 +1446,14 @@ class Checkout extends Component {
             }
 
             hideLoader("applypoints_cls", "class");
-            cookie.save("reedemPointVal", reedemPointVal, { path: "/" });
-            cookie.save("promoCodeVal", promoCodeVal, { path: "/" });
-            cookie.save("promotionApplied", promotionApplied, { path: "/" });
-            cookie.save("promotionType", promotionType, { path: "/" });
-            cookie.save("promotionAmount", promotionAmount, { path: "/" });
-            cookie.save("promotionSource", promotionSource, { path: "/" });
-            cookie.save("promoIsDelivery", promoIsDelivery, { path: "/" });
-            cookie.save("usedPoints", usedPoints, { path: "/" });
+            cookie.save("reedemPointVal", reedemPointVal, cookieDefaultConfig);
+            cookie.save("promoCodeVal", promoCodeVal, cookieDefaultConfig);
+            cookie.save("promotionApplied", promotionApplied, cookieDefaultConfig);
+            cookie.save("promotionType", promotionType, cookieDefaultConfig);
+            cookie.save("promotionAmount", promotionAmount, cookieDefaultConfig);
+            cookie.save("promotionSource", promotionSource, cookieDefaultConfig);
+            cookie.save("promoIsDelivery", promoIsDelivery, cookieDefaultConfig);
+            cookie.save("usedPoints", usedPoints, cookieDefaultConfig);
 
             this.setState({
               reward_point_val: reedemPointVal,
@@ -1519,14 +1520,14 @@ class Checkout extends Component {
           }
 
           hideLoader("applypromo_cls", "class");
-          cookie.save("reedemPointVal", reedemPointVal, { path: "/" });
-          cookie.save("promoCodeVal", promoCodeVal, { path: "/" });
-          cookie.save("promotionApplied", promotionApplied, { path: "/" });
-          cookie.save("promotionType", promotionType, { path: "/" });
-          cookie.save("promotionAmount", promotionAmount, { path: "/" });
-          cookie.save("promotionSource", promotionSource, { path: "/" });
-          cookie.save("promoIsDelivery", promoIsDelivery, { path: "/" });
-          cookie.save("usedPoints", usedPoints, { path: "/" });
+          cookie.save("reedemPointVal", reedemPointVal, cookieDefaultConfig);
+          cookie.save("promoCodeVal", promoCodeVal, cookieDefaultConfig);
+          cookie.save("promotionApplied", promotionApplied, cookieDefaultConfig);
+          cookie.save("promotionType", promotionType, cookieDefaultConfig);
+          cookie.save("promotionAmount", promotionAmount, cookieDefaultConfig);
+          cookie.save("promotionSource", promotionSource, cookieDefaultConfig);
+          cookie.save("promoIsDelivery", promoIsDelivery, cookieDefaultConfig);
+          cookie.save("usedPoints", usedPoints, cookieDefaultConfig);
 
           this.setState({
             reward_point_val: reedemPointVal,
@@ -1725,7 +1726,7 @@ class Checkout extends Component {
     Paymentpop = "No"
   ) {
     if (cookie.load("UserId") == "" || cookie.load("UserId") == undefined) {
-      cookie.save("loginpopupTrigger", "Yes", { path: "/" });
+      cookie.save("loginpopupTrigger", "Yes", cookieDefaultConfig);
       this.props.history.push("/");
       return false;
     }
@@ -1738,12 +1739,12 @@ class Checkout extends Component {
       var unitNoTwo = this.state.unitnumber2;
       if (unitNoOne == "" && unitNoTwo == "") {
         /*showAlert('Error', 'Please enter unit No.');
-				$.magnificPopup.open({
-					items: {
-						src: '.alert_popup'
-					},
-					type: 'inline'
-				});*/
+        $.magnificPopup.open({
+          items: {
+            src: '.alert_popup'
+          },
+          type: 'inline'
+        });*/
 
         if (paymentMode === 1) {
           $.magnificPopup.close();
@@ -2033,7 +2034,7 @@ class Checkout extends Component {
       custBirthdate = format(birthdateTxt, "yyyy-MM-dd");
       custGender = this.state.cust_gender;
       if (validation !== "Yes") {
-        cookie.save("UserBirthdate", custBirthdate, { path: "/" });
+        cookie.save("UserBirthdate", custBirthdate, cookieDefaultConfig);
       }
     }
 
@@ -2254,12 +2255,12 @@ class Checkout extends Component {
     $(".warining_popup").remove();
     $("body").append(
       '<div class="white-popup mfp-hide popup_sec warining_popup"><div class="custom_alert"><div class="custom_alertin"><div class="alert_height"><div class="alert_header">' +
-        header +
-        '</div><div class="alert_body"><p>' +
-        message +
-        '</p><div class="alt_btns"><a href="javascript:void(0);" onClick="' +
-        this.pageReload() +
-        '"class="button btn-sm btn_yellow popup-modal-dismiss">OK</a></div></div></div></div></div></div>'
+      header +
+      '</div><div class="alert_body"><p>' +
+      message +
+      '</p><div class="alt_btns"><a href="javascript:void(0);" onClick="' +
+      this.pageReload() +
+      '"class="button btn-sm btn_yellow popup-modal-dismiss">OK</a></div></div></div></div></div></div>'
     );
   }
 
@@ -2300,7 +2301,7 @@ class Checkout extends Component {
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   /* Omise Capture Payment */
@@ -2347,7 +2348,7 @@ class Checkout extends Component {
           });
         } else {
           /*var magnfPopup = $.magnificPopup.instance;
-				showAlert('Error', 'Your order was not successful.', magnfPopup);
+        showAlert('Error', 'Your order was not successful.', magnfPopup);
                 $.magnificPopup.open({
                     items: {
                         src: '.alert_popup'
@@ -2417,7 +2418,7 @@ class Checkout extends Component {
     this.props.destroyCartDetail();
     this.deleteOrderCookie();
     /*this.sendMailFun(orderPrimaryId);*/
-    cookie.save("ChkOrderid", localOrderNo, { path: "/" });
+    cookie.save("ChkOrderid", localOrderNo, cookieDefaultConfig);
     const { history } = this.props;
     setTimeout(function () {
       $.magnificPopup.close();
@@ -2434,7 +2435,7 @@ class Checkout extends Component {
         "&order_primary_id=" +
         orderPrimaryId +
         "&mode=Cron";
-      axios.get(urlShringTxt).then((res) => {});
+      axios.get(urlShringTxt).then((res) => { });
     }
   }
 
@@ -2442,39 +2443,39 @@ class Checkout extends Component {
   deleteOrderCookie() {
     removePromoCkValue();
 
-    cookie.remove("orderPaymentMode", { path: "/" });
-    cookie.remove("orderTableNo", { path: "/" });
-    cookie.remove("product_remarks", { path: "/" });
-    cookie.remove("orderOutletName", { path: "/" });
-    cookie.remove("orderOutletId", { path: "/" });
-    cookie.remove("carttotalitems", { path: "/" });
-    cookie.remove("cartsubtotal", { path: "/" });
-    cookie.remove("cartid", { path: "/" });
+    cookie.remove("orderPaymentMode", cookieDefaultConfig);
+    cookie.remove("orderTableNo", cookieDefaultConfig);
+    cookie.remove("product_remarks", cookieDefaultConfig);
+    cookie.remove("orderOutletName", cookieDefaultConfig);
+    cookie.remove("orderOutletId", cookieDefaultConfig);
+    cookie.remove("carttotalitems", cookieDefaultConfig);
+    cookie.remove("cartsubtotal", cookieDefaultConfig);
+    cookie.remove("cartid", cookieDefaultConfig);
 
     /* Delivery avilablity */
-    cookie.remove("deliveryDate", { path: "/" });
-    cookie.remove("deliveryTime", { path: "/" });
-    cookie.remove("unitNoOne", { path: "/" });
-    cookie.remove("unitNoTwo", { path: "/" });
-    cookie.remove("firstNavigation", { path: "/" });
+    cookie.remove("deliveryDate", cookieDefaultConfig);
+    cookie.remove("deliveryTime", cookieDefaultConfig);
+    cookie.remove("unitNoOne", cookieDefaultConfig);
+    cookie.remove("unitNoTwo", cookieDefaultConfig);
+    cookie.remove("firstNavigation", cookieDefaultConfig);
 
-    cookie.remove("promotion_id", { path: "/" });
-    cookie.remove("promotion_applied", { path: "/" });
-    cookie.remove("promotion_code", { path: "/" });
-    cookie.remove("promotion_delivery_charge_applied", { path: "/" });
-    cookie.remove("promotion_amount", { path: "/" });
-    cookie.remove("promotion_category", { path: "/" });
-    cookie.remove("prmo_type", { path: "/" });
+    cookie.remove("promotion_id", cookieDefaultConfig);
+    cookie.remove("promotion_applied", cookieDefaultConfig);
+    cookie.remove("promotion_code", cookieDefaultConfig);
+    cookie.remove("promotion_delivery_charge_applied", cookieDefaultConfig);
+    cookie.remove("promotion_amount", cookieDefaultConfig);
+    cookie.remove("promotion_category", cookieDefaultConfig);
+    cookie.remove("prmo_type", cookieDefaultConfig);
 
     /*Remove voucher*/
-    cookie.remove("voucher_applied", { path: "/" });
-    cookie.remove("voucher_code", { path: "/" });
-    cookie.remove("voucher_amount", { path: "/" });
+    cookie.remove("voucher_applied", cookieDefaultConfig);
+    cookie.remove("voucher_code", cookieDefaultConfig);
+    cookie.remove("voucher_amount", cookieDefaultConfig);
 
-    cookie.remove("points_redeemed", { path: "/" });
-    cookie.remove("points_used", { path: "/" });
-    cookie.remove("points_amount", { path: "/" });
-    cookie.remove("prmo_type", { path: "/" });
+    cookie.remove("points_redeemed", cookieDefaultConfig);
+    cookie.remove("points_used", cookieDefaultConfig);
+    cookie.remove("points_amount", cookieDefaultConfig);
+    cookie.remove("prmo_type", cookieDefaultConfig);
   }
 
   choosePayment(paymentMode) {
@@ -2772,7 +2773,7 @@ class Checkout extends Component {
               <div className="product-short-description">
                 <p>
                   {product.product_short_description !== null &&
-                  product.product_short_description !== ""
+                    product.product_short_description !== ""
                     ? Parser(stripslashes(product.product_short_description))
                     : Parser("&nbsp;")}
                 </p>
@@ -3249,7 +3250,7 @@ class Checkout extends Component {
               })
               .catch((error) => {
                 /*$.magnificPopup.close();
-				this.paymentFail('Error', "Error code: 1002 Oops! Unable to connect to server. Please try again.");
+        this.paymentFail('Error', "Error code: 1002 Oops! Unable to connect to server. Please try again.");
                 $.magnificPopup.open({
                     items: {
                         src: '.warining_popup'
@@ -3415,7 +3416,7 @@ class Checkout extends Component {
 
     var userBirthdate =
       cookie.load("UserBirthdate") != "" &&
-      cookie.load("UserBirthdate") != undefined
+        cookie.load("UserBirthdate") != undefined
         ? cookie.load("UserBirthdate")
         : "";
 
@@ -3807,7 +3808,7 @@ class Checkout extends Component {
                           />
                         </div>
                         {this.state.promotion_applied === "Yes" &&
-                        this.state.promotion_type === "points" ? (
+                          this.state.promotion_type === "points" ? (
                           <button
                             className="button btn_minwid applyPoints"
                             onClick={this.removePointsAndPromo.bind(
@@ -3867,7 +3868,7 @@ class Checkout extends Component {
                           />
                         </div>
                         {this.state.promotion_applied === "Yes" &&
-                        this.state.promotion_type === "promoCode" ? (
+                          this.state.promotion_type === "promoCode" ? (
                           <button
                             className="button btn_minwid promobtn applyPromo"
                             onClick={this.removePointsAndPromo.bind(

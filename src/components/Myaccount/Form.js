@@ -22,6 +22,7 @@ import {
   apiUrlV2,
   deliveryId,
   timThumpUrl,
+  cookieDefaultConfig
 } from "../Helpers/Config";
 import axios from "axios";
 import cookie from "react-cookies";
@@ -169,7 +170,7 @@ class Form extends React.Component {
   handleChangeDate(datevalue) {
     var dateval = new Date(datevalue);
     dateval = format(dateval, "dd/MM/yyyy");
-    cookie.save("birthdate", dateval, { path: "/" });
+    cookie.save("birthdate", dateval, cookieDefaultConfig);
     this.setState({ birthdate: datevalue });
     this.handleChange("birthdate", datevalue);
   }
@@ -215,7 +216,7 @@ class Form extends React.Component {
         } else {
         }
       })
-      .catch(function (error) {});
+      .catch(function (error) { });
   }
 
   /* Get Secondary Address Details */
@@ -252,10 +253,10 @@ class Form extends React.Component {
       axios
         .get(
           apiUrl +
-            "/settings/get_address?app_id=" +
-            appId +
-            "&zip_code=" +
-            postal
+          "/settings/get_address?app_id=" +
+          appId +
+          "&zip_code=" +
+          postal
         )
         .then((res) => {
           if (res.data.status === "ok") {
@@ -498,8 +499,8 @@ class Form extends React.Component {
                           <img
                             src={
                               fields.photo !== null &&
-                              fields.photo !== "" &&
-                              fields.photo !== "null"
+                                fields.photo !== "" &&
+                                fields.photo !== "null"
                                 ? fields.photo
                                 : pflImg
                             }
@@ -702,25 +703,25 @@ class Form extends React.Component {
                                     <div className="re_select">
                                       {(gender !== "" ||
                                         fields.gender !== "") && (
-                                        <Select
-                                          defaultValue={{
-                                            value: gender,
-                                            label: genderlabel,
-                                          }}
-                                          onChange={onChange.bind(
-                                            this,
-                                            "gender"
-                                          )}
-                                          options={[
-                                            { value: "M", label: "Male" },
-                                            { value: "F", label: "Female" },
-                                            {
-                                              value: "O",
-                                              label: "Unspecified",
-                                            },
-                                          ]}
-                                        />
-                                      )}
+                                          <Select
+                                            defaultValue={{
+                                              value: gender,
+                                              label: genderlabel,
+                                            }}
+                                            onChange={onChange.bind(
+                                              this,
+                                              "gender"
+                                            )}
+                                            options={[
+                                              { value: "M", label: "Male" },
+                                              { value: "F", label: "Female" },
+                                              {
+                                                value: "O",
+                                                label: "Unspecified",
+                                              },
+                                            ]}
+                                          />
+                                        )}
                                     </div>
 
                                     {/*<div className="form-group custom_select">

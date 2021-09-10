@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { withRouter, Link, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
-import { appId, apiUrl, deliveryId } from "../Helpers/Config";
+import { appId, apiUrl, deliveryId, cookieDefaultConfig } from "../Helpers/Config";
 import axios from "axios";
 import cookie from "react-cookies";
 
@@ -43,7 +43,7 @@ class Account extends Component {
             },
             type: "inline",
           });
-          cookie.save("loginPopup", 1, { path: "/" });
+          cookie.save("loginPopup", 1, cookieDefaultConfig);
           history.push("/");
         } else {
           showAlert(

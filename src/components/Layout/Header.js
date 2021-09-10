@@ -7,6 +7,8 @@ import axios from "axios";
 import update from "immutability-helper";
 import { setMinutes, setHours, getDay, format } from "date-fns";
 var dateFormat = require("dateformat");
+import moment from "moment";
+const timeInterval = 25;
 
 import {
   appId,
@@ -16,6 +18,7 @@ import {
   pickupId,
   baseUrl,
   googleAppId,
+  cookieDefaultConfig
 } from "../Helpers/Config";
 
 import {
@@ -70,12 +73,14 @@ import takeawayImg from "../../common/images/grocery.png";
 class Header extends Component {
   constructor(props) {
     super(props);
+	
+	 this.idleTimer = null;
     this.state = {
       seletedAvilablityId: "",
       defaultAvilablityId:
         cookie.load("defaultAvilablityId") !== "" &&
-        typeof cookie.load("defaultAvilablityId") !== undefined &&
-        typeof cookie.load("defaultAvilablityId") !== "undefined"
+          typeof cookie.load("defaultAvilablityId") !== undefined &&
+          typeof cookie.load("defaultAvilablityId") !== "undefined"
           ? cookie.load("defaultAvilablityId")
           : "",
       seletedOutletId: "",
@@ -180,6 +185,8 @@ class Header extends Component {
   fieldChange = (field, value) => {
     this.setState(update(this.state, { fields: { [field]: { $set: value } } }));
   };
+  
+ 
 
   handleSignin = () => {
     const formPayload = this.state.fields;
@@ -396,10 +403,10 @@ class Header extends Component {
     } else if (nav_pages === "products") {
       returnClsTx =
         this.props.match.path === "/products" ||
-        this.props.match.path === "/products/:slugType/:slugValue" ||
-        this.props.match.path === "/products/:slugType/:slugValue/:proValue" ||
-        this.props.match.path === "/checkout" ||
-        this.props.match.path === "/thankyou/:orderId"
+          this.props.match.path === "/products/:slugType/:slugValue" ||
+          this.props.match.path === "/products/:slugType/:slugValue/:proValue" ||
+          this.props.match.path === "/checkout" ||
+          this.props.match.path === "/thankyou/:orderId"
           ? "active"
           : "";
     } else {
@@ -483,8 +490,8 @@ class Header extends Component {
       cookie.load("orderOutletId") != undefined
     ) {
       /*$.magnificPopup.close();
-			this.props.history.push('/products');
-			return false;*/
+      this.props.history.push('/products');
+      return false;*/
     }
 
     var popupIdtxt = "";
@@ -590,45 +597,44 @@ class Header extends Component {
       ) {
         cust_birthdate = fbloginData.result_set.customer_birthdate;
       }
-      cookie.save("UserId", fbloginData.result_set.customer_id, { path: "/" });
-      cookie.save("UserEmail", fbloginData.result_set.customer_email, {
-        path: "/",
-      });
+      cookie.save("UserId", fbloginData.result_set.customer_id, cookieDefaultConfig);
+	   sessionStorage.setItem("mytime", new Date(Date.now() +  timeInterval *60000));
+      cookie.save("UserEmail", fbloginData.result_set.customer_email, cookieDefaultConfig);
       cookie.save(
         "UserFname",
         fbloginData.result_set.customer_first_name !== ""
           ? fbloginData.result_set.customer_first_name
           : "",
-        { path: "/" }
+        cookieDefaultConfig
       );
       cookie.save(
         "UserLname",
         fbloginData.result_set.customer_last_name !== ""
           ? fbloginData.result_set.customer_last_name
           : "",
-        { path: "/" }
+        cookieDefaultConfig
       );
-      cookie.save("UserMobile", mobileno, { path: "/" });
-      cookie.save("UserBirthdate", cust_birthdate, { path: "/" });
+      cookie.save("UserMobile", mobileno, cookieDefaultConfig);
+      cookie.save("UserBirthdate", cust_birthdate, cookieDefaultConfig);
       cookie.save(
         "UserDefaultAddress",
         fbloginData.result_set.customer_address_name,
-        { path: "/" }
+        cookieDefaultConfig
       );
       cookie.save(
         "UserDefaultUnitOne",
         fbloginData.result_set.customer_address_line1,
-        { path: "/" }
+        cookieDefaultConfig
       );
       cookie.save(
         "UserDefaultUnitTwo",
         fbloginData.result_set.customer_address_line2,
-        { path: "/" }
+        cookieDefaultConfig
       );
       cookie.save(
         "UserDefaultPostalCode",
         fbloginData.result_set.customer_postal_code,
-        { path: "/" }
+        cookieDefaultConfig
       );
       const { history } = this.props;
 
@@ -652,7 +658,7 @@ class Header extends Component {
           });
           if (res.data.status === "ok") {
             if (cookie.load("loginpopupTrigger") === "fromcheckout") {
-              cookie.remove("loginpopupTrigger", { path: "/" });
+              cookie.remove("loginpopupTrigger", cookieDefaultConfig);
               history.push("/checkout");
             } else {
               history.push("/myaccount");
@@ -662,7 +668,7 @@ class Header extends Component {
           }
         });
     } else {
-      cookie.remove("loginpopupTrigger", { path: "/" });
+      cookie.remove("loginpopupTrigger", cookieDefaultConfig);
       /*showAlert('Error', 'Invalid Login Credentials','trigger_login','#login-popup');*/
       showAlert("Error", fbloginData.message);
       $.magnificPopup.open({
@@ -787,6 +793,15 @@ class Header extends Component {
       type: "inline",
     });
   }
+   changeSessionTimer() {
+	      sessionStorage.setItem("mytime", new Date(Date.now() + timeInterval *60000));
+   }
+   
+    logoutSessionTimer() {
+	        //history.push("/logout");
+			 this.props.history.push("/logout");
+   }
+ 
 
   changeAvailability() {
     var tempArr = [],
@@ -844,55 +859,55 @@ class Header extends Component {
 
   deleteOrderCookie(clear = "Yes") {
     if (clear == "Yes") {
-      cookie.remove("orderZoneId", { path: "/" });
-      cookie.remove("orderOutletId", { path: "/" });
-      cookie.remove("outletchosen", { path: "/" });
+      cookie.remove("orderZoneId", cookieDefaultConfig);
+      cookie.remove("orderOutletId", cookieDefaultConfig);
+      cookie.remove("outletchosen", cookieDefaultConfig);
     }
 
     removeOrderDateTime();
     removePromoCkValue();
 
-    cookie.remove("orderPaymentMode", { path: "/" });
-    cookie.remove("orderTableNo", { path: "/" });
-    cookie.remove("product_remarks", { path: "/" });
-    cookie.remove("orderOutletName", { path: "/" });
-    cookie.remove("carttotalitems", { path: "/" });
-    cookie.remove("cartsubtotal", { path: "/" });
-    cookie.remove("cartid", { path: "/" });
-    cookie.remove("firstNavigation", { path: "/" });
+    cookie.remove("orderPaymentMode", cookieDefaultConfig);
+    cookie.remove("orderTableNo", cookieDefaultConfig);
+    cookie.remove("product_remarks", cookieDefaultConfig);
+    cookie.remove("orderOutletName", cookieDefaultConfig);
+    cookie.remove("carttotalitems", cookieDefaultConfig);
+    cookie.remove("cartsubtotal", cookieDefaultConfig);
+    cookie.remove("cartid", cookieDefaultConfig);
+    cookie.remove("firstNavigation", cookieDefaultConfig);
 
     /* Delivery avilablity */
-    cookie.remove("orderDateTime", { path: "/" });
-    cookie.remove("deliveryDate", { path: "/" });
-    cookie.remove("deliveryTime", { path: "/" });
-    cookie.remove("unitNoOne", { path: "/" });
-    cookie.remove("unitNoTwo", { path: "/" });
+    cookie.remove("orderDateTime", cookieDefaultConfig);
+    cookie.remove("deliveryDate", cookieDefaultConfig);
+    cookie.remove("deliveryTime", cookieDefaultConfig);
+    cookie.remove("unitNoOne", cookieDefaultConfig);
+    cookie.remove("unitNoTwo", cookieDefaultConfig);
 
     /* For Advanced Slot */
-    cookie.remove("isAdvanced", { path: "/" });
-    cookie.remove("slotType", { path: "/" });
-    cookie.remove("orderSlotVal", { path: "/" });
-    cookie.remove("orderSlotTxt", { path: "/" });
-    cookie.remove("orderSlotStrTime", { path: "/" });
-    cookie.remove("orderSlotEndTime", { path: "/" });
+    cookie.remove("isAdvanced", cookieDefaultConfig);
+    cookie.remove("slotType", cookieDefaultConfig);
+    cookie.remove("orderSlotVal", cookieDefaultConfig);
+    cookie.remove("orderSlotTxt", cookieDefaultConfig);
+    cookie.remove("orderSlotStrTime", cookieDefaultConfig);
+    cookie.remove("orderSlotEndTime", cookieDefaultConfig);
 
-    cookie.remove("promotion_id", { path: "/" });
-    cookie.remove("promotion_applied", { path: "/" });
-    cookie.remove("promotion_code", { path: "/" });
-    cookie.remove("promotion_delivery_charge_applied", { path: "/" });
-    cookie.remove("promotion_amount", { path: "/" });
-    cookie.remove("promotion_category", { path: "/" });
-    cookie.remove("prmo_type", { path: "/" });
+    cookie.remove("promotion_id", cookieDefaultConfig);
+    cookie.remove("promotion_applied", cookieDefaultConfig);
+    cookie.remove("promotion_code", cookieDefaultConfig);
+    cookie.remove("promotion_delivery_charge_applied", cookieDefaultConfig);
+    cookie.remove("promotion_amount", cookieDefaultConfig);
+    cookie.remove("promotion_category", cookieDefaultConfig);
+    cookie.remove("prmo_type", cookieDefaultConfig);
 
     /*Remove voucher*/
-    cookie.remove("voucher_applied", { path: "/" });
-    cookie.remove("voucher_code", { path: "/" });
-    cookie.remove("voucher_amount", { path: "/" });
+    cookie.remove("voucher_applied", cookieDefaultConfig);
+    cookie.remove("voucher_code", cookieDefaultConfig);
+    cookie.remove("voucher_amount", cookieDefaultConfig);
 
-    cookie.remove("points_redeemed", { path: "/" });
-    cookie.remove("points_used", { path: "/" });
-    cookie.remove("points_amount", { path: "/" });
-    cookie.remove("prmo_type", { path: "/" });
+    cookie.remove("points_redeemed", cookieDefaultConfig);
+    cookie.remove("points_used", cookieDefaultConfig);
+    cookie.remove("points_amount", cookieDefaultConfig);
+    cookie.remove("prmo_type", cookieDefaultConfig);
   }
 
   /* find Zone*/
@@ -925,13 +940,13 @@ class Header extends Component {
       .all([
         axios.get(
           apiUrlV2 +
-            "outlets/findOutletZone?app_id=" +
-            appId +
-            "&skip_timing=Yes&availability_id=" +
-            availability +
-            "&postal_code=" +
-            postalcode +
-            "&&postalcode_basedoutlet=yes"
+          "outlets/findOutletZone?app_id=" +
+          appId +
+          "&skip_timing=Yes&availability_id=" +
+          availability +
+          "&postal_code=" +
+          postalcode +
+          "&&postalcode_basedoutlet=yes"
         ),
       ])
       .then(
@@ -939,7 +954,7 @@ class Header extends Component {
           var deliveryInfo = [];
           /* Success response */
           if (res.data.status === "ok") {
-            cookie.save("outletchosen", availability, { path: "/" });
+            cookie.save("outletchosen", availability, cookieDefaultConfig);
 
             var additionalTatTime =
               res.data.result_set.zone_additional_tat_time !== ""
@@ -1006,12 +1021,12 @@ class Header extends Component {
                 axios
                   .get(
                     apiUrlV2 +
-                      "settings/chkTimeslotIsAvaiable?app_id=" +
-                      appId +
-                      "&availability_id=" +
-                      availability +
-                      "&outletId=" +
-                      res.data.result_set.outlet_id
+                    "settings/chkTimeslotIsAvaiable?app_id=" +
+                    appId +
+                    "&availability_id=" +
+                    availability +
+                    "&outletId=" +
+                    res.data.result_set.outlet_id
                   )
                   .then((timeslt) => {
                     hideLoader("delivery_submit_cls", "class");
@@ -1096,12 +1111,12 @@ class Header extends Component {
     axios
       .get(
         apiUrl +
-          "outlets/find_outlet?skip_timing=Yes&app_id=" +
-          appId +
-          "&availability_id=" +
-          availability +
-          "&postal_code=" +
-          postalcode
+        "outlets/find_outlet?skip_timing=Yes&app_id=" +
+        appId +
+        "&availability_id=" +
+        availability +
+        "&postal_code=" +
+        postalcode
       )
       .then((res) => {
         hideLoader("delivery_submit_cls", "class");
@@ -1109,7 +1124,7 @@ class Header extends Component {
         /* Success response */
         if (res.data.status === "ok") {
           $.magnificPopup.close();
-          cookie.save("outletchosen", availability, { path: "/" });
+          cookie.save("outletchosen", availability, cookieDefaultConfig);
           var orderDeliveryAddress =
             res.data.result_set.postal_code_information.zip_buno +
             " " +
@@ -1126,27 +1141,21 @@ class Header extends Component {
               res.data.result_set.postal_code_information.zip_code,
           });
           this.setState({ orderHandled: orderHandled });
-          cookie.save("orderOutletId", res.data.result_set.outlet_id, {
-            path: "/",
-          });
+          cookie.save("orderOutletId", res.data.result_set.outlet_id, cookieDefaultConfig);
           cookie.save(
             "orderOutletName",
             stripslashes(res.data.result_set.outlet_name),
-            { path: "/" }
+            cookieDefaultConfig
           );
           cookie.save(
             "orderPostalCode",
             res.data.result_set.postal_code_information.zip_code,
-            { path: "/" }
+            cookieDefaultConfig
           );
-          cookie.save("orderTAT", res.data.result_set.outlet_delivery_timing, {
-            path: "/",
-          });
-          cookie.save("orderDeliveryAddress", orderDeliveryAddress, {
-            path: "/",
-          });
-          cookie.save("orderHandled", orderHandled, { path: "/" });
-          cookie.save("defaultAvilablityId", availability, { path: "/" });
+          cookie.save("orderTAT", res.data.result_set.outlet_delivery_timing, cookieDefaultConfig);
+          cookie.save("orderDeliveryAddress", orderDeliveryAddress, cookieDefaultConfig);
+          cookie.save("orderHandled", orderHandled, cookieDefaultConfig);
+          cookie.save("defaultAvilablityId", availability, cookieDefaultConfig);
 
           var orderHandledText =
             res.data.result_set.outlet_address_line1 +
@@ -1154,7 +1163,7 @@ class Header extends Component {
             res.data.result_set.outlet_address_line2 +
             ", Singapore " +
             postalcode;
-          cookie.save("orderHandledByText", orderHandledText, { path: "/" });
+          cookie.save("orderHandledByText", orderHandledText, cookieDefaultConfig);
 
           removeOrderDateTime();
           removePromoCkValue();
@@ -1199,12 +1208,10 @@ class Header extends Component {
         '<span class="error"> Please choose one outlet.</span>'
       );
     } else {
-      cookie.save("outletchosen", cookie.load("defaultAvilablityId"), {
-        path: "/",
-      });
+      cookie.save("outletchosen", cookie.load("defaultAvilablityId"), cookieDefaultConfig);
       $.magnificPopup.close();
       if (cookie.load("popuptriggerFrom") === "FeaturedPro") {
-        cookie.remove("popuptriggerFrom", { path: "/" });
+        cookie.remove("popuptriggerFrom", cookieDefaultConfig);
         this.props.history.push("/");
       } else {
         this.props.history.push("/products");
@@ -1221,12 +1228,12 @@ class Header extends Component {
       axios
         .get(
           apiUrlV2 +
-            "settings/chkTimeslotIsAvaiable?app_id=" +
-            appId +
-            "&availability_id=" +
-            pickupId +
-            "&outletId=" +
-            seletedOutletId
+          "settings/chkTimeslotIsAvaiable?app_id=" +
+          appId +
+          "&availability_id=" +
+          pickupId +
+          "&outletId=" +
+          seletedOutletId
         )
         .then((res) => {
           hideLoader("takeaway-btn-act", "class");
@@ -1291,9 +1298,9 @@ class Header extends Component {
       matches = this.state.pickupOutletsList.filter(function (item) {
         return (
           item.outlet_address_line1.substring(0, value.length).toLowerCase() ===
-            value ||
+          value ||
           item.outlet_postal_code.substring(0, value.length).toLowerCase() ===
-            value ||
+          value ||
           stripslashes(item.outlet_name)
             .substring(0, value.length)
             .toLowerCase() === value
@@ -1333,7 +1340,7 @@ class Header extends Component {
     var pickupInfo = this.state.pickupInfo;
     var actTxt =
       parseInt(seletedOutletId) === parseInt(outletID) &&
-      Object.keys(pickupInfo).length > 0
+        Object.keys(pickupInfo).length > 0
         ? "active"
         : "";
     return actTxt;
@@ -1344,9 +1351,9 @@ class Header extends Component {
       matches = this.state.deliveryOutletsList.filter(function (item) {
         return (
           item.outlet_address_line1.substring(0, value.length).toLowerCase() ===
-            value ||
+          value ||
           item.outlet_postal_code.substring(0, value.length).toLowerCase() ===
-            value ||
+          value ||
           stripslashes(item.outlet_name)
             .substring(0, value.length)
             .toLowerCase() === value
@@ -1461,12 +1468,17 @@ class Header extends Component {
   }
 
   componentDidMount() {
+	  if(  typeof cookie.load("ses_time") !== "undefined"   && typeof cookie.load("UserId") !== "undefined"   ) {
+		  this.onIdle();
+	  }
+	  
+	  
     if (
       cookie.load("openLogin") !== undefined &&
       typeof cookie.load("openLogin") !== undefined &&
       typeof cookie.load("openLogin") !== "undefined"
     ) {
-      cookie.remove("openLogin", { path: "/" });
+      cookie.remove("openLogin", cookieDefaultConfig);
       $.magnificPopup.open({
         items: {
           src: "#login-popup",
@@ -1642,7 +1654,31 @@ class Header extends Component {
     this.getSearchProductList();
   }
 
-  componentDidUpdate() {}
+ onIdle = () => {
+    this.logoutTimer = setTimeout(() => {
+	
+      if(typeof sessionStorage.getItem("mytime") !== "undefined" && sessionStorage.getItem("mytime") !== null  && typeof cookie.load("UserId") !== "undefined" && cookie.load("UserId") !== null ) {
+		 if (moment(sessionStorage.getItem("mytime")) <  moment(new Date(Date.now()))   ) {
+			 
+		  	$.magnificPopup.open({
+          items: {
+            src: "#session-expired-popup",
+          },
+          type: "inline",
+		          closeOnBgClick: false,
+				  enableEscapeKey: false,
+				    showCloseBtn:false
+        });
+		 
+		 }
+		 
+		    this.onIdle();
+	  }
+	    
+    }, 1000 * 5 * 1); // 5 seconds
+  }
+  
+ 
 
   getSearchProductList() {
     var orderOutletIdtext = cookie.load("orderOutletId");
@@ -1654,11 +1690,11 @@ class Header extends Component {
     return axios
       .get(
         apiUrlV2 +
-          "products/search_products?app_id=" +
-          appId +
-          "&status=A&availability=" +
-          cookie.load("defaultAvilablityId") +
-          addquery_txt
+        "products/search_products?app_id=" +
+        appId +
+        "&status=A&availability=" +
+        cookie.load("defaultAvilablityId") +
+        addquery_txt
       )
       .then((response) => {
         if (response.data.status === "ok") {
@@ -1761,8 +1797,8 @@ class Header extends Component {
     var searchResult = [];
     /*if (Object.keys(searchProResult).length > 0) {*/
     /*searchProResult.map((loadData) =>
-			  searchResult.push({ value: loadData.value, label: loadData.label })
-			 );*/
+        searchResult.push({ value: loadData.value, label: loadData.label })
+       );*/
     searchResult.push({ value: "wqewrr", label: "fish cury" });
     searchResult.push({ value: "werew3", label: "fish cury2" });
     console.log("wlll");
@@ -2013,9 +2049,9 @@ class Header extends Component {
           this.convPad(OrderMunts) +
           ":" +
           this.convPad(OrderSecnd);
-        cookie.save("orderDateTime", orderDateTime, { path: "/" });
-        cookie.save("deliveryDate", deliveryDate, { path: "/" });
-        cookie.save("deliveryTime", deliveryTime, { path: "/" });
+        cookie.save("orderDateTime", orderDateTime, cookieDefaultConfig);
+        cookie.save("deliveryDate", deliveryDate, cookieDefaultConfig);
+        cookie.save("deliveryTime", deliveryTime, cookieDefaultConfig);
 
         /* For Advanced Slot */
         var isAdvanced = this.state.isAdvanced;
@@ -2030,59 +2066,45 @@ class Header extends Component {
           orderSlotStrTime = this.state.seleted_ord_slot_str;
           orderSlotEndTime = this.state.seleted_ord_slot_end;
         }
-        cookie.save("isAdvanced", isAdvanced, { path: "/" });
-        cookie.save("slotType", slotType, { path: "/" });
-        cookie.save("orderSlotVal", orderSlotVal, { path: "/" });
-        cookie.save("orderSlotTxt", orderSlotTxt, { path: "/" });
-        cookie.save("orderSlotStrTime", orderSlotStrTime, { path: "/" });
-        cookie.save("orderSlotEndTime", orderSlotEndTime, { path: "/" });
+        cookie.save("isAdvanced", isAdvanced, cookieDefaultConfig);
+        cookie.save("slotType", slotType, cookieDefaultConfig);
+        cookie.save("orderSlotVal", orderSlotVal, cookieDefaultConfig);
+        cookie.save("orderSlotTxt", orderSlotTxt, cookieDefaultConfig);
+        cookie.save("orderSlotStrTime", orderSlotStrTime, cookieDefaultConfig);
+        cookie.save("orderSlotEndTime", orderSlotEndTime, cookieDefaultConfig);
         /* For Advanced Slot End */
 
         if (this.state.seletedAvilablityId === deliveryId) {
-          cookie.save("orderZoneId", orderInfoData["orderZoneId"], {
-            path: "/",
-          });
+          cookie.save("orderZoneId", orderInfoData["orderZoneId"], cookieDefaultConfig);
           cookie.save(
             "orderDeliveryAddress",
             orderInfoData["orderDeliveryAddress"],
-            { path: "/" }
+            cookieDefaultConfig
           );
         }
 
-        cookie.save("orderOutletId", orderInfoData["orderOutletId"], {
-          path: "/",
-        });
-        cookie.save("orderOutletName", orderInfoData["orderOutletName"], {
-          path: "/",
-        });
-        cookie.save("orderPostalCode", orderInfoData["orderPostalCode"], {
-          path: "/",
-        });
-        cookie.save("orderTAT", orderInfoData["orderTAT"], { path: "/" });
-        cookie.save("orderHandled", orderInfoData["orderHandled"], {
-          path: "/",
-        });
+        cookie.save("orderOutletId", orderInfoData["orderOutletId"], cookieDefaultConfig);
+        cookie.save("orderOutletName", orderInfoData["orderOutletName"], cookieDefaultConfig);
+        cookie.save("orderPostalCode", orderInfoData["orderPostalCode"], cookieDefaultConfig);
+        cookie.save("orderTAT", orderInfoData["orderTAT"], cookieDefaultConfig);
+        cookie.save("orderHandled", orderInfoData["orderHandled"], cookieDefaultConfig);
         cookie.save(
           "defaultAvilablityId",
           orderInfoData["defaultAvilablityId"],
-          { path: "/" }
+          cookieDefaultConfig
         );
-        cookie.save("orderHandledByText", orderInfoData["orderHandledByText"], {
-          path: "/",
-        });
-        cookie.save("outletchosen", orderInfoData["defaultAvilablityId"], {
-          path: "/",
-        });
+        cookie.save("orderHandledByText", orderInfoData["orderHandledByText"], cookieDefaultConfig);
+        cookie.save("outletchosen", orderInfoData["defaultAvilablityId"], cookieDefaultConfig);
 
         $.magnificPopup.close();
         if (cookie.load("popuptriggerFrom") === "FeaturedPro") {
-          cookie.remove("popuptriggerFrom", { path: "/" });
+          cookie.remove("popuptriggerFrom", cookieDefaultConfig);
           this.props.history.push("/");
         } else {
           if (
             this.props.match.path === "/products" ||
             this.props.match.path ===
-              "/products/:slugType/:slugValue/:proValue" ||
+            "/products/:slugType/:slugValue/:proValue" ||
             this.props.match.path === "/products/:slugType/:slugValue"
           ) {
             location.reload();
@@ -2335,9 +2357,9 @@ class Header extends Component {
                           className="htico_sign"
                           className={
                             this.props.match.path === "/myaccount" ||
-                            this.props.match.path === "/myorders" ||
-                            this.props.match.path === "/rewards" ||
-                            this.props.match.path === "/mypromotions"
+                              this.props.match.path === "/myorders" ||
+                              this.props.match.path === "/rewards" ||
+                              this.props.match.path === "/mypromotions"
                               ? "htico_sign active"
                               : "htico_sign"
                           }
@@ -3075,6 +3097,45 @@ class Header extends Component {
                         className="button button-right popup-modal-dismiss disbl_href_action"
                       >
                         Yes
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Warning Popup - end */}
+		  
+		  
+		   {/* Warning Popup - start */}
+          <div
+            id="session-expired-popup"
+            className="white-popup mfp-hide popup_sec warning_popup"
+          >
+            <div className="custom_alert">
+              <div className="custom_alertin">
+                <div className="alert_height">
+                  <div className="alert_header">Warning</div>
+                  <div className="alert_body">
+                    <img className="warning-popup-img" src={warningImg} />
+                    <p> Your session will expire in 5 mins</p>
+                    <p>Do you want to extend the session?</p>
+                    <div className="alt_btns">
+                      <a
+                        href="/"
+						 onClick={this.changeSessionTimer.bind(this)}
+                        className="popup-modal-dismiss button button-left disbl_href_action"
+                      >
+                        Yes
+                      </a>
+					  
+					  
+                      <a
+                        href="/"
+                        onClick={this.logoutSessionTimer.bind(this)}
+                        className="button button-right popup-modal-dismiss disbl_href_action"
+                      >
+                        Logout
                       </a>
                     </div>
                   </div>

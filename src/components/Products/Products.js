@@ -9,7 +9,7 @@ import Footer from "../Layout/Footer";
 import MenuNavigation from "./MenuNavigation";
 import ProductList from "./ProductList";
 import ProductDetail from "./ProductDetail";
-import { deliveryId } from "../Helpers/Config";
+import { deliveryId, cookieDefaultConfig } from "../Helpers/Config";
 import { showLoader } from "../Helpers/SettingHelper";
 import {
   GET_STATIC_BLOCK,
@@ -44,7 +44,7 @@ class Products extends Component {
 
     var orderOutletId = cookie.load("orderOutletId");
     if (orderOutletId === "" || orderOutletId === undefined) {
-      cookie.save("orderPopuptrigger", "Yes", { path: "/" });
+      cookie.save("orderPopuptrigger", "Yes", cookieDefaultConfig);
       this.props.history.push("/");
       return;
     }

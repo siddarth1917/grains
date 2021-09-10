@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { stripslashes } from "../Helpers/SettingHelper";
-import { mediaUrl, pickupId } from "../Helpers/Config";
+import { mediaUrl, pickupId, cookieDefaultConfig } from "../Helpers/Config";
 import cookie from "react-cookies";
 import Header from "../Layout/Header";
 import Footer from "../Layout/Footer";
@@ -106,7 +106,7 @@ class Pages extends Component {
   }
 
   gotoContacus(outletId) {
-    cookie.save("contusOutletId", outletId, { path: "/" });
+    cookie.save("contusOutletId", outletId, cookieDefaultConfig);
     this.props.history.push("/contact-us");
   }
 
@@ -135,8 +135,8 @@ class Pages extends Component {
             <div className="ourrest_row">
               <div className="ourrest_img">
                 {item.outlet_image !== "" &&
-                typeof item.outlet_image !== undefined &&
-                typeof item.outlet_image !== "undefined" ? (
+                  typeof item.outlet_image !== undefined &&
+                  typeof item.outlet_image !== "undefined" ? (
                   <img
                     src={mediaUrl + "outlet/" + item.outlet_image}
                     alt="Outlet Img"
@@ -155,9 +155,9 @@ class Pages extends Component {
                   {item.outlet_address_line1}
                   {item.outlet_unit_number2 !== ""
                     ? "#" +
-                      item.outlet_unit_number1 +
-                      "-" +
-                      item.outlet_unit_number2
+                    item.outlet_unit_number1 +
+                    "-" +
+                    item.outlet_unit_number2
                     : item.outlet_unit_number1}{" "}
                   Singapore - {item.outlet_postal_code}
                 </p>
