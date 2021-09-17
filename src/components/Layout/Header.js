@@ -8,8 +8,8 @@ import update from "immutability-helper";
 import { setMinutes, setHours, getDay, format } from "date-fns";
 var dateFormat = require("dateformat");
 import moment from "moment";
-const timeInterval = 25;
-
+const timeInterval = 5;
+var startIntervel = 0;
 import {
   appId,
   apiUrl,
@@ -18,7 +18,7 @@ import {
   pickupId,
   baseUrl,
   googleAppId,
-  cookieDefaultConfig
+  cookieDefaultConfig,
 } from "../Helpers/Config";
 
 import {
@@ -73,14 +73,14 @@ import takeawayImg from "../../common/images/grocery.png";
 class Header extends Component {
   constructor(props) {
     super(props);
-	
-	 this.idleTimer = null;
+
+    this.idleTimer = null;
     this.state = {
       seletedAvilablityId: "",
       defaultAvilablityId:
         cookie.load("defaultAvilablityId") !== "" &&
-          typeof cookie.load("defaultAvilablityId") !== undefined &&
-          typeof cookie.load("defaultAvilablityId") !== "undefined"
+        typeof cookie.load("defaultAvilablityId") !== undefined &&
+        typeof cookie.load("defaultAvilablityId") !== "undefined"
           ? cookie.load("defaultAvilablityId")
           : "",
       seletedOutletId: "",
@@ -185,8 +185,6 @@ class Header extends Component {
   fieldChange = (field, value) => {
     this.setState(update(this.state, { fields: { [field]: { $set: value } } }));
   };
-  
- 
 
   handleSignin = () => {
     const formPayload = this.state.fields;
@@ -403,10 +401,10 @@ class Header extends Component {
     } else if (nav_pages === "products") {
       returnClsTx =
         this.props.match.path === "/products" ||
-          this.props.match.path === "/products/:slugType/:slugValue" ||
-          this.props.match.path === "/products/:slugType/:slugValue/:proValue" ||
-          this.props.match.path === "/checkout" ||
-          this.props.match.path === "/thankyou/:orderId"
+        this.props.match.path === "/products/:slugType/:slugValue" ||
+        this.props.match.path === "/products/:slugType/:slugValue/:proValue" ||
+        this.props.match.path === "/checkout" ||
+        this.props.match.path === "/thankyou/:orderId"
           ? "active"
           : "";
     } else {
@@ -597,13 +595,32 @@ class Header extends Component {
       ) {
         cust_birthdate = fbloginData.result_set.customer_birthdate;
       }
-      cookie.save("UserId", fbloginData.result_set.customer_id, cookieDefaultConfig);
-	   sessionStorage.setItem("mytime", new Date(Date.now() +  timeInterval *60000));
-      cookie.save("UserEmail", fbloginData.result_set.customer_email, cookieDefaultConfig);
+      cookie.save(
+        "UserId",
+        fbloginData.result_set.customer_id,
+        cookieDefaultConfig
+      );
+      sessionStorage.setItem(
+        "mytime",
+        new Date(Date.now() + timeInterval * 60000)
+      );
+      cookie.save(
+        "UserEmail",
+        fbloginData.result_set.customer_email,
+        cookieDefaultConfig
+      );
       cookie.save(
         "UserFname",
         fbloginData.result_set.customer_first_name !== ""
           ? fbloginData.result_set.customer_first_name
+          : "",
+        cookieDefaultConfig
+      );
+
+      cookie.save(
+        "customer_login_key",
+        fbloginData.result_set.customer_login_key !== ""
+          ? fbloginData.result_set.customer_login_key
           : "",
         cookieDefaultConfig
       );
@@ -793,15 +810,17 @@ class Header extends Component {
       type: "inline",
     });
   }
-   changeSessionTimer() {
-	      sessionStorage.setItem("mytime", new Date(Date.now() + timeInterval *60000));
-   }
-   
-    logoutSessionTimer() {
-	        //history.push("/logout");
-			 this.props.history.push("/logout");
-   }
- 
+  changeSessionTimer() {
+    sessionStorage.setItem(
+      "mytime",
+      new Date(Date.now() + timeInterval * 60000)
+    );
+  }
+
+  logoutSessionTimer() {
+    //history.push("/logout");
+    this.props.history.push("/logout");
+  }
 
   changeAvailability() {
     var tempArr = [],
@@ -940,13 +959,13 @@ class Header extends Component {
       .all([
         axios.get(
           apiUrlV2 +
-          "outlets/findOutletZone?app_id=" +
-          appId +
-          "&skip_timing=Yes&availability_id=" +
-          availability +
-          "&postal_code=" +
-          postalcode +
-          "&&postalcode_basedoutlet=yes"
+            "outlets/findOutletZone?app_id=" +
+            appId +
+            "&skip_timing=Yes&availability_id=" +
+            availability +
+            "&postal_code=" +
+            postalcode +
+            "&&postalcode_basedoutlet=yes"
         ),
       ])
       .then(
@@ -1021,12 +1040,12 @@ class Header extends Component {
                 axios
                   .get(
                     apiUrlV2 +
-                    "settings/chkTimeslotIsAvaiable?app_id=" +
-                    appId +
-                    "&availability_id=" +
-                    availability +
-                    "&outletId=" +
-                    res.data.result_set.outlet_id
+                      "settings/chkTimeslotIsAvaiable?app_id=" +
+                      appId +
+                      "&availability_id=" +
+                      availability +
+                      "&outletId=" +
+                      res.data.result_set.outlet_id
                   )
                   .then((timeslt) => {
                     hideLoader("delivery_submit_cls", "class");
@@ -1111,12 +1130,12 @@ class Header extends Component {
     axios
       .get(
         apiUrl +
-        "outlets/find_outlet?skip_timing=Yes&app_id=" +
-        appId +
-        "&availability_id=" +
-        availability +
-        "&postal_code=" +
-        postalcode
+          "outlets/find_outlet?skip_timing=Yes&app_id=" +
+          appId +
+          "&availability_id=" +
+          availability +
+          "&postal_code=" +
+          postalcode
       )
       .then((res) => {
         hideLoader("delivery_submit_cls", "class");
@@ -1141,7 +1160,11 @@ class Header extends Component {
               res.data.result_set.postal_code_information.zip_code,
           });
           this.setState({ orderHandled: orderHandled });
-          cookie.save("orderOutletId", res.data.result_set.outlet_id, cookieDefaultConfig);
+          cookie.save(
+            "orderOutletId",
+            res.data.result_set.outlet_id,
+            cookieDefaultConfig
+          );
           cookie.save(
             "orderOutletName",
             stripslashes(res.data.result_set.outlet_name),
@@ -1152,8 +1175,16 @@ class Header extends Component {
             res.data.result_set.postal_code_information.zip_code,
             cookieDefaultConfig
           );
-          cookie.save("orderTAT", res.data.result_set.outlet_delivery_timing, cookieDefaultConfig);
-          cookie.save("orderDeliveryAddress", orderDeliveryAddress, cookieDefaultConfig);
+          cookie.save(
+            "orderTAT",
+            res.data.result_set.outlet_delivery_timing,
+            cookieDefaultConfig
+          );
+          cookie.save(
+            "orderDeliveryAddress",
+            orderDeliveryAddress,
+            cookieDefaultConfig
+          );
           cookie.save("orderHandled", orderHandled, cookieDefaultConfig);
           cookie.save("defaultAvilablityId", availability, cookieDefaultConfig);
 
@@ -1163,7 +1194,11 @@ class Header extends Component {
             res.data.result_set.outlet_address_line2 +
             ", Singapore " +
             postalcode;
-          cookie.save("orderHandledByText", orderHandledText, cookieDefaultConfig);
+          cookie.save(
+            "orderHandledByText",
+            orderHandledText,
+            cookieDefaultConfig
+          );
 
           removeOrderDateTime();
           removePromoCkValue();
@@ -1208,7 +1243,11 @@ class Header extends Component {
         '<span class="error"> Please choose one outlet.</span>'
       );
     } else {
-      cookie.save("outletchosen", cookie.load("defaultAvilablityId"), cookieDefaultConfig);
+      cookie.save(
+        "outletchosen",
+        cookie.load("defaultAvilablityId"),
+        cookieDefaultConfig
+      );
       $.magnificPopup.close();
       if (cookie.load("popuptriggerFrom") === "FeaturedPro") {
         cookie.remove("popuptriggerFrom", cookieDefaultConfig);
@@ -1228,12 +1267,12 @@ class Header extends Component {
       axios
         .get(
           apiUrlV2 +
-          "settings/chkTimeslotIsAvaiable?app_id=" +
-          appId +
-          "&availability_id=" +
-          pickupId +
-          "&outletId=" +
-          seletedOutletId
+            "settings/chkTimeslotIsAvaiable?app_id=" +
+            appId +
+            "&availability_id=" +
+            pickupId +
+            "&outletId=" +
+            seletedOutletId
         )
         .then((res) => {
           hideLoader("takeaway-btn-act", "class");
@@ -1298,9 +1337,9 @@ class Header extends Component {
       matches = this.state.pickupOutletsList.filter(function (item) {
         return (
           item.outlet_address_line1.substring(0, value.length).toLowerCase() ===
-          value ||
+            value ||
           item.outlet_postal_code.substring(0, value.length).toLowerCase() ===
-          value ||
+            value ||
           stripslashes(item.outlet_name)
             .substring(0, value.length)
             .toLowerCase() === value
@@ -1340,7 +1379,7 @@ class Header extends Component {
     var pickupInfo = this.state.pickupInfo;
     var actTxt =
       parseInt(seletedOutletId) === parseInt(outletID) &&
-        Object.keys(pickupInfo).length > 0
+      Object.keys(pickupInfo).length > 0
         ? "active"
         : "";
     return actTxt;
@@ -1351,9 +1390,9 @@ class Header extends Component {
       matches = this.state.deliveryOutletsList.filter(function (item) {
         return (
           item.outlet_address_line1.substring(0, value.length).toLowerCase() ===
-          value ||
+            value ||
           item.outlet_postal_code.substring(0, value.length).toLowerCase() ===
-          value ||
+            value ||
           stripslashes(item.outlet_name)
             .substring(0, value.length)
             .toLowerCase() === value
@@ -1468,11 +1507,15 @@ class Header extends Component {
   }
 
   componentDidMount() {
-	  if(typeof sessionStorage.getItem("mytime") !== "undefined" && sessionStorage.getItem("mytime") !== null  && typeof cookie.load("UserId") !== "undefined" && cookie.load("UserId") !== null ) {
-		  this.onIdle();
-	  }
-	  
-	  
+    if (
+      typeof sessionStorage.getItem("mytime") !== "undefined" &&
+      sessionStorage.getItem("mytime") !== null &&
+      typeof cookie.load("UserId") !== "undefined" &&
+      cookie.load("UserId") !== null
+    ) {
+      this.onIdle();
+    }
+
     if (
       cookie.load("openLogin") !== undefined &&
       typeof cookie.load("openLogin") !== undefined &&
@@ -1654,31 +1697,38 @@ class Header extends Component {
     this.getSearchProductList();
   }
 
- onIdle = () => {
+  onIdle = () => {
     this.logoutTimer = setTimeout(() => {
- 
-      if(typeof sessionStorage.getItem("mytime") !== "undefined" && sessionStorage.getItem("mytime") !== null  && typeof cookie.load("UserId") !== "undefined" && cookie.load("UserId") !== null ) {
-		 if (moment(sessionStorage.getItem("mytime")) <  moment(new Date(Date.now()))   ) {
-			 
-		  	$.magnificPopup.open({
-          items: {
-            src: "#session-expired-popup",
-          },
-          type: "inline",
-		          closeOnBgClick: false,
-				  enableEscapeKey: false,
-				    showCloseBtn:false
-        });
-		 
-		 }
-		 
-		    this.onIdle();
-	  }
-	    
+      if (
+        typeof sessionStorage.getItem("mytime") !== "undefined" &&
+        sessionStorage.getItem("mytime") !== null &&
+        typeof cookie.load("UserId") !== "undefined" &&
+        cookie.load("UserId") !== null
+      ) {
+        startIntervel++;
+        if (
+          moment(sessionStorage.getItem("mytime")) <
+          moment(new Date(Date.now()))
+        ) {
+          $.magnificPopup.open({
+            items: {
+              src: "#session-expired-popup",
+            },
+            type: "inline",
+            closeOnBgClick: false,
+            enableEscapeKey: false,
+            showCloseBtn: false,
+          });
+        }
+        if (startIntervel >= 90) {
+          $.magnificPopup.close();
+          this.props.history.push("/logout");
+        }
+        console.log(startIntervel);
+        this.onIdle();
+      }
     }, 1000 * 5 * 1); // 5 seconds
-  }
-  
- 
+  };
 
   getSearchProductList() {
     var orderOutletIdtext = cookie.load("orderOutletId");
@@ -1690,11 +1740,11 @@ class Header extends Component {
     return axios
       .get(
         apiUrlV2 +
-        "products/search_products?app_id=" +
-        appId +
-        "&status=A&availability=" +
-        cookie.load("defaultAvilablityId") +
-        addquery_txt
+          "products/search_products?app_id=" +
+          appId +
+          "&status=A&availability=" +
+          cookie.load("defaultAvilablityId") +
+          addquery_txt
       )
       .then((response) => {
         if (response.data.status === "ok") {
@@ -2075,7 +2125,11 @@ class Header extends Component {
         /* For Advanced Slot End */
 
         if (this.state.seletedAvilablityId === deliveryId) {
-          cookie.save("orderZoneId", orderInfoData["orderZoneId"], cookieDefaultConfig);
+          cookie.save(
+            "orderZoneId",
+            orderInfoData["orderZoneId"],
+            cookieDefaultConfig
+          );
           cookie.save(
             "orderDeliveryAddress",
             orderInfoData["orderDeliveryAddress"],
@@ -2083,18 +2137,42 @@ class Header extends Component {
           );
         }
 
-        cookie.save("orderOutletId", orderInfoData["orderOutletId"], cookieDefaultConfig);
-        cookie.save("orderOutletName", orderInfoData["orderOutletName"], cookieDefaultConfig);
-        cookie.save("orderPostalCode", orderInfoData["orderPostalCode"], cookieDefaultConfig);
+        cookie.save(
+          "orderOutletId",
+          orderInfoData["orderOutletId"],
+          cookieDefaultConfig
+        );
+        cookie.save(
+          "orderOutletName",
+          orderInfoData["orderOutletName"],
+          cookieDefaultConfig
+        );
+        cookie.save(
+          "orderPostalCode",
+          orderInfoData["orderPostalCode"],
+          cookieDefaultConfig
+        );
         cookie.save("orderTAT", orderInfoData["orderTAT"], cookieDefaultConfig);
-        cookie.save("orderHandled", orderInfoData["orderHandled"], cookieDefaultConfig);
+        cookie.save(
+          "orderHandled",
+          orderInfoData["orderHandled"],
+          cookieDefaultConfig
+        );
         cookie.save(
           "defaultAvilablityId",
           orderInfoData["defaultAvilablityId"],
           cookieDefaultConfig
         );
-        cookie.save("orderHandledByText", orderInfoData["orderHandledByText"], cookieDefaultConfig);
-        cookie.save("outletchosen", orderInfoData["defaultAvilablityId"], cookieDefaultConfig);
+        cookie.save(
+          "orderHandledByText",
+          orderInfoData["orderHandledByText"],
+          cookieDefaultConfig
+        );
+        cookie.save(
+          "outletchosen",
+          orderInfoData["defaultAvilablityId"],
+          cookieDefaultConfig
+        );
 
         $.magnificPopup.close();
         if (cookie.load("popuptriggerFrom") === "FeaturedPro") {
@@ -2104,7 +2182,7 @@ class Header extends Component {
           if (
             this.props.match.path === "/products" ||
             this.props.match.path ===
-            "/products/:slugType/:slugValue/:proValue" ||
+              "/products/:slugType/:slugValue/:proValue" ||
             this.props.match.path === "/products/:slugType/:slugValue"
           ) {
             location.reload();
@@ -2357,9 +2435,9 @@ class Header extends Component {
                           className="htico_sign"
                           className={
                             this.props.match.path === "/myaccount" ||
-                              this.props.match.path === "/myorders" ||
-                              this.props.match.path === "/rewards" ||
-                              this.props.match.path === "/mypromotions"
+                            this.props.match.path === "/myorders" ||
+                            this.props.match.path === "/rewards" ||
+                            this.props.match.path === "/mypromotions"
                               ? "htico_sign active"
                               : "htico_sign"
                           }
@@ -3105,9 +3183,8 @@ class Header extends Component {
             </div>
           </div>
           {/* Warning Popup - end */}
-		  
-		  
-		   {/* Warning Popup - start */}
+
+          {/* Warning Popup - start */}
           <div
             id="session-expired-popup"
             className="white-popup mfp-hide popup_sec warning_popup"
@@ -3123,13 +3200,12 @@ class Header extends Component {
                     <div className="alt_btns">
                       <a
                         href="/"
-						 onClick={this.changeSessionTimer.bind(this)}
+                        onClick={this.changeSessionTimer.bind(this)}
                         className="popup-modal-dismiss button button-left disbl_href_action"
                       >
                         Yes
                       </a>
-					  
-					  
+
                       <a
                         href="/"
                         onClick={this.logoutSessionTimer.bind(this)}

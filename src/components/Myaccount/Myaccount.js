@@ -114,6 +114,7 @@ class Myaccount extends Component {
       customer_address_line1: formPayload.unitnumber1,
       customer_address_line2: formPayload.unitnumber2,
       customer_id: base64.encode(cookie.load("UserId")),
+      customer_login_key: cookie.load("customer_login_key"),
       enc: "Y",
     };
     $(".myaccount_update").append('<b class="gloading_img"></b>');
@@ -191,7 +192,7 @@ class Myaccount extends Component {
         if (
           nextProps.customerdetail[0].result_set.customer_birthdate == null ||
           nextProps.customerdetail[0].result_set.customer_birthdate ==
-          "0000-00-00"
+            "0000-00-00"
         ) {
           var birthdate = "";
         } else {
@@ -208,7 +209,7 @@ class Myaccount extends Component {
           fields: {
             firstname:
               nextProps.customerdetail[0].result_set.customer_first_name !==
-                null
+              null
                 ? nextProps.customerdetail[0].result_set.customer_first_name
                 : "",
             birthdate: birthdate,
@@ -231,42 +232,42 @@ class Myaccount extends Component {
 
             photo:
               nextProps.customerdetail[0].result_set.customer_photo !== null &&
-                nextProps.customerdetail[0].result_set.customer_photo !== ""
+              nextProps.customerdetail[0].result_set.customer_photo !== ""
                 ? nextProps.customerdetail[0].result_set.customer_photo.indexOf(
-                  "http"
-                ) > 0
+                    "http"
+                  ) > 0
                   ? nextProps.customerdetail[0].result_set.customer_photo
                   : nextProps.customerdetail[0].common.image_source +
-                  nextProps.customerdetail[0].result_set.customer_photo
+                    nextProps.customerdetail[0].result_set.customer_photo
                 : "",
             postal:
               nextProps.customerdetail[0].result_set.customer_postal_code !==
-                null
+              null
                 ? nextProps.customerdetail[0].result_set.customer_postal_code
                 : "",
             unitnumber2:
               nextProps.customerdetail[0].result_set.customer_address_line2 !==
-                null
+              null
                 ? nextProps.customerdetail[0].result_set.customer_address_line2
                 : "",
             unitnumber1:
               nextProps.customerdetail[0].result_set.customer_address_line1 !==
-                null
+              null
                 ? nextProps.customerdetail[0].result_set.customer_address_line1
                 : "",
             address:
               nextProps.customerdetail[0].result_set.customer_address_name !==
-                null
+              null
                 ? nextProps.customerdetail[0].result_set.customer_address_name
                 : "",
             address1:
               nextProps.customerdetail[0].result_set.customer_address_name2 !==
-                null
+              null
                 ? nextProps.customerdetail[0].result_set.customer_address_name2
                 : "",
             company:
               nextProps.customerdetail[0].result_set.customer_company_name !==
-                null
+              null
                 ? nextProps.customerdetail[0].result_set.customer_company_name
                 : "",
             fbid: nextProps.customerdetail[0].result_set.customer_fb_id,
@@ -277,12 +278,12 @@ class Myaccount extends Component {
                 : "",
             joinedOn:
               nextProps.customerdetail[0].result_set.customer_created_on !==
-                null
+              null
                 ? nextProps.customerdetail[0].result_set.customer_created_on
                 : "",
             gender:
               nextProps.customerdetail[0].result_set.customer_gender !== null &&
-                nextProps.customerdetail[0].result_set.customer_gender !== ""
+              nextProps.customerdetail[0].result_set.customer_gender !== ""
                 ? nextProps.customerdetail[0].result_set.customer_gender
                 : "M",
           },

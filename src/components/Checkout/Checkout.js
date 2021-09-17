@@ -1878,6 +1878,7 @@ class Checkout extends Component {
 
         products.push({
           product_name: item.cart_item_product_name,
+          product_item_id: item.cart_item_id,
           product_unit_price: item.cart_item_unit_price,
           product_total_amount: item.cart_item_total_price,
           product_sku: item.cart_item_product_sku,
